@@ -9,6 +9,9 @@ import {
   orderBy,
   query,
   onSnapshot,
+  setDoc,
+  doc,
+  deleteDoc,
 } from "firebase/firestore";
 import { fireDb } from "../../firebase/FireBaseConfig";
 
@@ -39,7 +42,7 @@ function myState(props) {
       year: "numeric",
     }),
   });
-  console.log(products);
+
   const addProduct = async () => {
     if (
       products.title === null ||
@@ -58,7 +61,7 @@ function myState(props) {
         toast.success("Product added successfully");
       }, 800);
 
-      window.location.href = "/dashoboard";
+      window.location.href = "/dashboard";
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -81,10 +84,38 @@ function myState(props) {
       console.log(error);
     }
   };
-
+  // update product function
+  const editHandle = (item) => {
+    setProducts(item);
+  };
+  const updateProduct = async () => {
+    try {
+      await setDoc(doc(fireDb, "products", products.id), products);
+      toast.success("Product updated successfully");
+      getProductData();
+      window.location.href = "/dashboard";
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     getProductData();
   }, []);
+
+  const deleteProduct = async (item) => {
+    setLoading(true);
+    try {
+      await deleteDoc(doc(fireDb, "products", item.id));
+      toast.success("Product deleted successfully");
+      getProductData();
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   return (
     <MyContext.Provider
       value={{
@@ -96,6 +127,10 @@ function myState(props) {
         setProducts,
         addProduct,
         product,
+        setProduct,
+        editHandle,
+        updateProduct,
+        deleteProduct,
       }}
     >
       {props.children}
