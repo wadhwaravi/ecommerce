@@ -13,7 +13,9 @@ function DashboardTab() {
   function closeModal() {
     setIsOpen(false);
   }
-
+  const add = () => {
+    window.location.href = "/addproduct";
+  };
   function openModal() {
     setIsOpen(true);
   }
@@ -67,6 +69,7 @@ function DashboardTab() {
                 <div className=" flex justify-end">
                   <button
                     type="button"
+                    onClick={add}
                     className="focus:outline-none text-white bg-pink-600 shadow-[inset_0_0_10px_rgba(0,0,0,0.6)] border hover:bg-pink-700 outline-0 font-medium rounded-lg text-sm px-5 py-2.5 mb-2"
                     style={{
                       backgroundColor: mode === "dark" ? "rgb(46 49 55)" : "",
