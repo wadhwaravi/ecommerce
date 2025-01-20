@@ -10,6 +10,7 @@ import {
   query,
   onSnapshot,
   setDoc,
+  getDocs,
   doc,
   deleteDoc,
 } from "firebase/firestore";
@@ -42,7 +43,7 @@ function myState(props) {
       year: "numeric",
     }),
   });
-
+  const [order, setOrder] = useState([]);
   const addProduct = async () => {
     if (
       products.title === null ||
@@ -84,6 +85,7 @@ function myState(props) {
       console.log(error);
     }
   };
+  const [user, setUser] = useState([]);
   // update product function
   const editHandle = (item) => {
     setProducts(item);
@@ -115,7 +117,47 @@ function myState(props) {
       setLoading(false);
     }
   };
+  const getOrderData = async () => {
+    setLoading(true);
+    try {
+      const result = await getDocs(collection(fireDb, "orders"));
+      const ordersArray = [];
+      result.forEach((doc) => {
+        ordersArray.push(doc.data());
+        setLoading(false);
+      });
+      setOrder(ordersArray);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    getProductData();
+    getOrderData();
+    getUserData();
+  }, []);
+  const getUserData = async () => {
+    setLoading(true);
+    try {
+      const result = await getDocs(collection(fireDb, "user"));
+      const usersArray = [];
+      result.forEach((doc) => {
+        usersArray.push(doc.data());
+        setLoading(false);
+      });
+      setUser(usersArray);
+
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const [searchkey, setSearchkey] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [filterPrice, setFilterPrice] = useState("");
   return (
     <MyContext.Provider
       value={{
@@ -131,6 +173,14 @@ function myState(props) {
         editHandle,
         updateProduct,
         deleteProduct,
+        order,
+        user,
+        searchkey,
+        setSearchkey,
+        filterType,
+        setFilterType,
+        filterPrice,
+        setFilterPrice,
       }}
     >
       {props.children}

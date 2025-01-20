@@ -1,7 +1,10 @@
 import React from "react";
 import Layout from "../../components/layout/Layout";
-
+import { useParams } from "react-router-dom";
+import { getDoc } from "firebase/firestore";
 function ProductInfo() {
+  const productId = useParams().id;
+
   return (
     <Layout>
       <section className="text-gray-600 body-font overflow-hidden">
